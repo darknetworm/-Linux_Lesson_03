@@ -1,7 +1,4 @@
-Script started on 2023-03-20 10:46:44+03:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="80" LINES="24"]
-]0;root@student-Mi-Laptop-Air-12-5: /home/student/otus/lesson_03root@student-Mi-Laptop-Air-12-5:/home/student/otus/lesson_03# exitvagrant ssh[1Pupssh
-]0;vagrant@lvm:~[?1034h[vagrant@lvm ~]$ sudo su
-]0;root@lvm:/home/vagrant[?1034h[root@lvm vagrant]# pvcreate /dev[K[K[K[K[K[K[K[K[K[K[K[K[Klsblk
+root@lvm:/home/vagrant [root@lvm vagrant]# lsblk
 NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                       8:0    0   40G  0 disk 
 ├─sda1                    8:1    0    1M  0 part 
@@ -12,27 +9,22 @@ sda                       8:0    0   40G  0 disk
 sdb                       8:16   0   10G  0 disk 
 sdc                       8:32   0    2G  0 disk 
 sdd                       8:48   0    1G  0 disk 
-sde                       8:64   0    1G  0 disk 
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# pvcreate /dev/sda3 [K[K[Kc
+sde                       8:64   0    1G  0 disk
+
+root@lvm:/home/vagrant [root@lvm vagrant]# pvcreate /dev/sdc
   Physical volume "/dev/sdc" successfully created.
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgcreate op[K[Kvg_opt /dev/sda3 [K[K[Kc
-  Volume group "vg_opt" successfully created
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate -l1[K 100%FREE /dev/sd[K[K[K[K[K[K[K[C[1@-[1@n[1@ [1@l[1@v[1@_[1@o[1@p[1@t[1@ [C[C[C[C[C[C[C[C[C[C[C[Cv[K/dev/sd
-/dev/sda3  /dev/sdc   
-[root@lvm vagrant]# lvcreate -n lv_opt -l 100%FREE /dev/sd
-/dev/sda3  /dev/sdc   
-[root@lvm vagrant]# lvcreate -n lv_opt -l 100%FREE /dev/sd[K[K[K[K[K[K[Kvg[K[Kvg_opt
+root@lvm:/home/vagrant [root@lvm vagrant]# vgcreate vg_opt /dev/sdc
+  Volume group "vg_opt" successfully created       
+root@lvm:/home/vagrant [root@lvm vagrant]# lvcreate -n lv_opt -l 100%FREE vg_opt
   Logical volume "lv_opt" created.
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs
+
+root@lvm:/home/vagrant [root@lvm vagrant]# lvs
   LV       VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
   LogVol00 VolGroup00 -wi-ao---- <37.47g                                                    
   LogVol01 VolGroup00 -wi-ao----   1.50g                                                    
   lv_opt   vg_opt     -wi-a-----  <2.00g                                                    
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# mkfs.btrfs /dev/
-Display all 156 possibilities? (y or n)
-[root@lvm vagrant]# mkfs.btrfs /dev/oldmem [K[K[K[K[K[K[Kvg
-vga_arbiter  vg_opt/      
-[root@lvm vagrant]# mkfs.btrfs /dev/vg_opt/lv_opt 
+     
+root@lvm:/home/vagrant [root@lvm vagrant]# mkfs.btrfs /dev/vg_opt/lv_opt 
 btrfs-progs v4.9.1
 See http://btrfs.wiki.kernel.org for more information.
 
@@ -52,25 +44,19 @@ Devices:
    ID        SIZE  PATH
     1     2.00GiB  /dev/vg_opt/lv_opt
 
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# mkdir /mnt/opt
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/vg_opt/lv_opt /mnt/opt/
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# cp -aR /opt/* /mnt/opt/
-cp: cannot stat ‘/opt/*’: No such file or directory
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# rsync -avHPSAX /opt/ /mnt/opt/
+root@lvm:/home/vagrant [root@lvm vagrant]# mkdir /mnt/opt
+root@lvm:/home/vagrant [root@lvm vagrant]# mount /dev/vg_opt/lv_opt /mnt/opt/
+root@lvm:/home/vagrant [root@lvm vagrant]# rsync -avHPSAX /opt/ /mnt/opt/
 sending incremental file list
 ./
 
 sent 90 bytes  received 20 bytes  220.00 bytes/sec
 total size is 0  speedup is 0.00
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# umount /opt/[K[K[K[Kmnt/opt/
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# mount /dev/v
-vcs          vcs4         vcsa1        vcsa5        vg_opt/      
-vcs1         vcs5         vcsa2        vcsa6        vhci         
-vcs2         vcs6         vcsa3        vfio/        vhost-net    
-vcs3         vcsa         vcsa4        vga_arbiter  
-[root@lvm vagrant]# mount /dev/vg_opt/lv_opt /opt/
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# echo "1[K`blkid | grep var[K[K[Kopt | awk '{print $2|[K}'` /h[Kopt btrfs defau lts 0 0" >> /etc/fstab
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# cat /etc/fstab 
+
+root@lvm:/home/vagrant [root@lvm vagrant]# umount /mnt/opt/  
+root@lvm:/home/vagrant [root@lvm vagrant]# mount /dev/vg_opt/lv_opt /opt/
+root@lvm:/home/vagrant [root@lvm vagrant]# echo "`blkid | grep opt | awk '{print $2}'` /opt btrfs defaults 0 0" >> /etc/fstab
+root@lvm:/home/vagrant [root@lvm vagrant]# cat /etc/fstab 
 
 #
 # /etc/fstab
@@ -83,7 +69,8 @@ vcs3         vcsa         vcsa4        vga_arbiter
 UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot                   xfs     defaults        0 0
 /dev/mapper/VolGroup00-LogVol01 swap                    swap    defaults        0 0
 UUID="db70c0d6-ad13-4b16-b582-117fb99c325c" /opt btrfs defaults 0 0
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgextend op[K[K[K[K[K[K[K[K[K[K[Klsblk
+
+root@lvm:/home/vagrant [root@lvm vagrant]# vgextend lsblk
 NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                       8:0    0   40G  0 disk 
 ├─sda1                    8:1    0    1M  0 part 
@@ -96,14 +83,14 @@ sdc                       8:32   0    2G  0 disk
 └─vg_opt-lv_opt         253:2    0    2G  0 lvm  /opt
 sdd                       8:48   0    1G  0 disk 
 sde                       8:64   0    1G  0 disk 
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgextend opt[K[K[Kvg_opt /dev/sdd
+
+root@lvm:/home/vagrant [root@lvm vagrant]# vgextend vg_opt /dev/sdd
   Physical volume "/dev/sdd" successfully created.
   Volume group "vg_opt" successfully extended
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate -l 100%FREE -s -n opt_snap /dev/vg[K[K[K[K[K[K[K/dev/sd
-/dev/sda3  /dev/sdc   /dev/sdd   
-[root@lvm vagrant]# lvcreate -l 100%FREE -s -n opt_snap /dev/sd[K[K[K[K[K[K[Kvg_opt/lv_opt
+root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate -l 100%FREE -s -n opt_snap vg_opt/lv_opt
   Logical volume "opt_snap" created.
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lsblk
+
+root@lvm:/home/vagrant [root@lvm vagrant]# lsblk
 NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                       8:0    0   40G  0 disk 
 ├─sda1                    8:1    0    1M  0 part 
@@ -120,11 +107,13 @@ sdd                       8:48   0    1G  0 disk
 └─vg_opt-opt_snap-cow   253:4    0 1020M  0 lvm  
   └─vg_opt-opt_snap     253:5    0    2G  0 lvm  /opt
 sde                       8:64   0    1G  0 disk 
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgs
+
+root@lvm:/home/vagrant [root@lvm vagrant]# vgs
   VG         #PV #LV #SN Attr   VSize   VFree
   VolGroup00   1   2   0 wz--n- <38.97g    0 
   vg_opt       2   2   1 wz--n-   2.99g    0 
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvdisplay 
+
+root@lvm:/home/vagrant [root@lvm vagrant]# lvdisplay 
   --- Logical volume ---
   LV Path                /dev/VolGroup00/LogVol00
   LV Name                LogVol00
@@ -200,21 +189,25 @@ sde                       8:64   0    1G  0 disk
   - currently set to     8192
   Block device           253:5
    
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs
+root@lvm:/home/vagrant [root@lvm vagrant]# lvs
   LV       VG         Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
   LogVol00 VolGroup00 -wi-ao----  <37.47g                                                    
   LogVol01 VolGroup00 -wi-ao----    1.50g                                                    
   lv_opt   vg_opt     owi-aos---   <2.00g                                                    
   opt_snap vg_opt     swi-a-s--- 1020.00m      lv_opt 0.00                                   
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# vgextend Vg[K[Kvg_opt /dev/sde
+
+root@lvm:/home/vagrant [root@lvm vagrant]# vgextend vg_opt /dev/sde
   Physical volume "/dev/sde" successfully created.
   Volume group "vg_opt" successfully extended
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvcreate --type cache-pool -l 100%FREE vg_opt -n cache /dev/ssde
+
+root@lvm:/home/vagrant [root@lvm vagrant]# lvcreate --type cache-pool -l 100%FREE vg_opt -n cache /dev/sde
   Logical volume "cache" created.
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvconvert --type cache vg_opt/lv_opt --cache-pool vg_opt/cac he
+
+root@lvm:/home/vagrant [root@lvm vagrant]# lvconvert --type cache vg_opt/lv_opt --cache-pool vg_opt/cache
 Do you want wipe existing metadata of cache pool vg_opt/cache? [y/n]: y
   Logical volume vg_opt/lv_opt is now cached.
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lsblk
+
+root@lvm:/home/vagrant[root@lvm vagrant]# lsblk
 NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                       8:0    0   40G  0 disk 
 ├─sda1                    8:1    0    1M  0 part 
@@ -240,23 +233,10 @@ sde                       8:64   0    1G  0 disk
   └─vg_opt-lv_opt-real  253:3    0    2G  0 lvm  
     ├─vg_opt-lv_opt     253:2    0    2G  0 lvm  
     └─vg_opt-opt_snap   253:5    0    2G  0 lvm  /opt
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvm
-[?1034hlvm> q
-  No such command 'q'.  Try 'help'.
-lvm> exit
-  Exiting.
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# lvs
+
+root@lvm:/home/vagrant [root@lvm vagrant]# lvs
   LV       VG         Attr       LSize    Pool    Origin         Data%  Meta%  Move Log Cpy%Sync Convert
   LogVol00 VolGroup00 -wi-ao----  <37.47g                                                               
   LogVol01 VolGroup00 -wi-ao----    1.50g                                                               
   lv_opt   vg_opt     owi-aoC---   <2.00g [cache] [lv_opt_corig] 0.06   2.10            0.00            
   opt_snap vg_opt     swi-a-s--- 1020.00m         lv_opt         0.00                                   
-]0;root@lvm:/home/vagrant[root@lvm vagrant]# exit
-exit
-]0;vagrant@lvm:~[vagrant@lvm ~]$ exit
-logout
-Connection to 127.0.0.1 closed.
-]0;root@student-Mi-Laptop-Air-12-5: /home/student/otus/lesson_03root@student-Mi-Laptop-Air-12-5:/home/student/otus/lesson_03# exit
-exit
-
-Script done on 2023-03-20 11:01:47+03:00 [COMMAND_EXIT_CODE="0"]
